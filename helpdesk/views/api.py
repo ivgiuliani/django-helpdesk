@@ -115,10 +115,13 @@ class API:
 
     def api_public_get_ticket(self):
         ticket_id = self.request.POST.get('ticket', None)
+        if not ticket_id:
+            return api_return(STATUS_ERROR)
+
         try:
             ticket = Ticket.objects.get(id=ticket_id)
         except Ticket.DoesNotExist:
-            return api_return(STATUS_ERROR, "Invalid ticket ID provided")
+            return api_return(STATUS_ERROR_NOT_FOUND, "Invalid ticket ID provided")
 
         assigned_to = ticket.assigned_to.id or -1
         timestamp = int(time.mktime(ticket.created.timetuple()))
