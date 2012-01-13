@@ -1,0 +1,80 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2012-01-12 14:01:07",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$95f5a$5f217b1d4717fa7f5fcb4dccfa013c142a9ac82e",
+            "email": "admn@admin.com",
+            "date_joined": "2012-01-12 12:57:53"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "auth.user",
+        "fields": {
+            "username": "user",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2012-01-12 14:43:02",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$0988d$6aaa976f4f637c1bb146486eddc7de61d6cc35ab",
+            "email": "user@user.com",
+            "date_joined": "2012-01-12 13:17:17"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "helpdesk.queue",
+        "fields": {
+            "email_box_interval": 5,
+            "email_box_imap_folder": "",
+            "email_box_type": null,
+            "updated_ticket_cc": "",
+            "title": "queue title",
+            "locale": "",
+            "email_box_ssl": false,
+            "escalate_days": null,
+            "email_box_port": null,
+            "email_box_pass": "",
+            "email_box_user": "",
+            "new_ticket_cc": "",
+            "email_box_host": "",
+            "allow_public_submission": true,
+            "email_box_last_check": null,
+            "allow_email_submission": false,
+            "email_address": "",
+            "slug": "queue-slug"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "helpdesk.ticket",
+        "fields": {
+            "status": 1,
+            "priority": 3,
+            "description": "ticket description",
+            "created": "2012-01-12 14:02:25",
+            "title": "ticket title",
+            "modified": "2012-01-13 15:36:33",
+            "last_escalation": null,
+            "queue": 1,
+            "assigned_to": 1,
+            "submitter_email": "customer@customer.com",
+            "resolution": null,
+            "on_hold": false
+        }
+    }
+]
