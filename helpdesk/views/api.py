@@ -188,6 +188,23 @@ class API:
 
         return api_return(STATUS_OK)
 
+    def api_public_get_followups(self):
+        try:
+            ticket = Ticket.objects.get(id=self.request.POST.get('ticket', False))
+        except Ticket.DoesNotExist:
+            return api_return(STATUS_ERROR_NOT_FOUND, "Invalid ticket ID")
+
+        include_private = self.request.POST.get('private', 'y')
+        if include_private not in [ 'y', 'n' ]:
+            return api_return(STATUS_ERROR, "Invalid 'include_private' flag")
+        include_private = include_private == 'y'
+
+        followups = FollowUp.objects.filter(ticket=ticket)
+        if not include_private:
+            followups = followups.filter(public=True)
+
+        followups = tuple([ followup.id for followup in followups ])
+        return api_return(STATUS_OK, simplejson.dumps(followups), json=True)
 
     def api_public_add_followup(self):
         try:
