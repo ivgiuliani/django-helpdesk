@@ -2,8 +2,12 @@ from django.test import TestCase
 from django.test.client import Client
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from helpdesk.views import api
+from helpdesk.models import Ticket, FollowUp
+
+import datetime
 
 
 class APITest(TestCase):
@@ -50,3 +54,50 @@ class APITest(TestCase):
         self.assertEquals(ticket["description"], "ticket description")
         self.assertEquals(ticket["queue"], 1)
         self.assertEquals(ticket["submitter_email"], "customer@customer.com")
+
+    def testGetFollowupsForTicket(self):
+        response = self.api_call("get_followups", { "ticket": 25 })
+        self.assertEquals(response.status_code,
+                          api.STATUS_ERROR_NOT_FOUND)
+
+        response = self.api_call("get_followups", { "ticket": 1 })
+        self.assertEquals(response.status_code,
+                          api.STATUS_OK)
+
+        followups = simplejson.loads(response.content)
+        self.assertEquals(len(followups), 0)
+
+        ticket = Ticket.objects.get(id=1)
+        f = FollowUp(ticket=ticket,
+                     date=datetime.datetime.now(),
+                     comment="first comment",
+                     user=User.objects.get(username="admin"),
+                     public=True,
+                     title="Comment added")
+        f.save()
+        response = self.api_call("get_followups", { "ticket": 1 })
+        followups = simplejson.loads(response.content)
+        self.assertEquals(len(followups), 1)
+
+        f = FollowUp(ticket=ticket,
+                     date=datetime.datetime.now(),
+                     comment="private comment",
+                     user=User.objects.get(username="admin"),
+                     public=False,
+                     title="Comment added")
+        f.save()
+
+        response = self.api_call("get_followups", {
+            "ticket": 1,
+            "private": 'n',
+        })
+        followups = simplejson.loads(response.content)
+        self.assertEquals(len(followups), 1)
+
+        response = self.api_call("get_followups", {
+            "ticket": 1,
+            "private": 'y',
+        })
+        followups = simplejson.loads(response.content)
+        self.assertEquals(len(followups), 2)
+
