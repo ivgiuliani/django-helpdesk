@@ -13,6 +13,7 @@
             <li><a href='#methods'>Method Documentation</a>
                 <ul>
                     <li><a href='#method_create_ticket'>create_ticket</a></li>
+                    <li><a href='#method_get_ticket'>get_ticket</a></li>
                     <li><a href='#method_delete_ticket'>delete_ticket</a></li>
                     <li><a href='#method_hold_ticket'>hold_ticket</a></li>
                     <li><a href='#method_unhold_ticket'>unhold_ticket</a></li>
@@ -151,6 +152,72 @@ echo $result;
         <p>This method responds with <strong>plain-text</strong>.</p>
 
         <p>If you receive a 200 OK <a href='#response'>response</a>, then the content of the response will be the ticket ID.</p>
+
+        <h3 id='method_get_ticket'>get_ticket</h3>
+
+        <p>This method returns an existing helpdesk ticket.</p>
+
+        <h4>Parameters</h4>
+
+        <dl>
+            <dt>ticket</dt>
+            <dd>The numeric ticket ID.</dd>
+        </dl>
+
+        <h4>Response</h4>
+
+        <p>This method responds with <strong>json</strong>.</p>
+
+        <p>If you receive a 200 OK <a href='#response'>response</a>, then the content of the response will be a json dictionary with the following fields:</p>
+        <dl>
+            <dt>queue</dt>
+            <dd>Queue ID where the ticket belongs to.</dd>
+
+            <dt>title</dt>
+            <dd>Title or header of this ticket.</dd>
+
+            <dt>submitter_email</dt>
+            <dd>Email address of the person that submitted the ticket or an empty string if the email address was not provided.</dd>
+
+            <dt>assigned_to</dt>
+            <dd>Integer ID of the user to which this ticket has been assigned or -1 if this ticket has not been assigned to anyone.</dd>
+
+            <dt>priority</dt>
+            <dd>Priority of this ticket as an integer from 1 (high) to 5 (low).</dd>
+
+            <dt>created</dt>
+            <dd>Creation date of this ticket as UNIX timestamp.</dd>
+
+            <dt>status</dt>
+            <dd>Current status of this ticket as an integer. Possible status are:
+            <dl>
+                <dt>1</dt>
+                <dd>Ticket is open</dd>
+
+                <dt>2</dt>
+                <dd>Ticket has been reopened.</dd>
+
+                <dt>3</dt>
+                <dd>Ticket has been resolved.</dd>
+
+                <dt>4</dt>
+                <dd>Ticket has been closed.</dd>
+
+                <dt>5</dt>
+                <dd>The ticket has been closed as a duplicate of some other ticket.</dd>
+            </dl>
+
+            </dd>
+
+            <dt>on_hold</dt>
+            <dd>A boolean value that indicates whether the ticket is on hold.</dd>
+
+            <dt>description</dt>
+            <dd>The ticket description.</dd>
+
+            <dt>resolution</dt>
+            <dd>The resolution given to the ticket or an empty string if the ticket is still open.</dd>
+        </dl>
         
         <h3 id='method_delete_ticket'>delete_ticket</h3>
 
