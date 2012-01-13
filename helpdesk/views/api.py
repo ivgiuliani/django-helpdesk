@@ -25,6 +25,8 @@ from helpdesk.forms import TicketForm
 from helpdesk.lib import send_templated_mail, safe_template_context
 from helpdesk.models import Ticket, Queue, FollowUp
 
+import time
+
 STATUS_OK = 200
 
 STATUS_ERROR = 400
@@ -109,6 +111,28 @@ class API:
         else:
             return api_return(STATUS_ERROR, text=form.errors.as_text())
 
+    def api_public_get_ticket(self):
+        ticket_id = self.request.POST.get('ticket', None)
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            return api_return(STATUS_ERROR, "Invalid ticket ID provided")
+
+        assigned_to = ticket.assigned_to.id or -1
+        timestamp = int(time.mktime(ticket.created.timetuple()))
+        obj = {
+            "queue": ticket.queue.id,
+            "title": ticket.title,
+            "submitter_email": ticket.submitter_email,
+            "assigned_to": assigned_to,
+            "priority": ticket.priority,
+            "created": timestamp,
+            "status": ticket.status,
+            "on_hold": ticket.on_hold,
+            "description": ticket.description,
+            "resolution": ticket.resolution or "",
+        }
+        return api_return(STATUS_OK, simplejson.dumps(obj), json=True)
 
     def api_public_list_queues(self):
         return api_return(STATUS_OK, simplejson.dumps([{"id": "%s" % q.id, "title": "%s" % q.title} for q in Queue.objects.all()]), json=True)
