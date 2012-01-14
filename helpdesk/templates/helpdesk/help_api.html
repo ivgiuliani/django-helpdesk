@@ -18,6 +18,7 @@
                     <li><a href='#method_hold_ticket'>hold_ticket</a></li>
                     <li><a href='#method_unhold_ticket'>unhold_ticket</a></li>
                     <li><a href='#method_add_followup'>add_followup</a></li>
+                    <li><a href='#method_get_followups'>get_followups</a></li>
                     <li><a href='#method_resolve'>resolve</a></li>
                     <li><a href='#method_list_queues'>list_queues</a></li>
                     <li><a href='#method_find_user'>find_user</a></li>
@@ -115,10 +116,12 @@ echo $result;
 
         <ul>
             <li><a href='#method_create_ticket'>create_ticket</a></li>
+            <li><a href='#method_get_ticket'>get_ticket</a></li>
             <li><a href='#method_delete_ticket'>delete_ticket</a></li>
             <li><a href='#method_hold_ticket'>hold_ticket</a></li>
             <li><a href='#method_unhold_ticket'>unhold_ticket</a></li>
             <li><a href='#method_add_followup'>add_followup</a></li>
+            <li><a href='#method_get_followups'>get_followups</a></li>
             <li><a href='#method_resolve'>resolve</a></li>
             <li><a href='#method_list_queues'>list_queues</a></li>
             <li><a href='#method_find_user'>find_user</a></li>
@@ -266,7 +269,7 @@ echo $result;
         
         <p>A standard <a href='#response'>200 OK response</a> is given on success, or an error message on failure.</p>
         
-        
+
         <h3 id='method_add_followup'>add_followup</h3>
 
         <p>This method adds a comment / followup to a ticket. The followup can be public, in which case it is e-mailed to the submitter, or private. The followup will also be sent to others involved in the ticket: The owner and the queue notification / CC address.</p>
@@ -287,8 +290,49 @@ echo $result;
         <h4>Response</h4>
 
         <p>A standard <a href='#response'>200 OK response</a> is given on success, or an error message on failure.</p>
-        
-        
+
+
+        <h3 id='method_get_followups'>get_followups</h3>
+
+        <p>This method returns all the followups for the given ticket. By default all followups are returned, but it's possible to exclude private followups.</p>
+
+        <h4>Parameters</h4>
+
+        <dl>
+            <dt>ticket</dt>
+            <dd>The numeric ticket ID to which this followup should be added</dd>
+
+            <dt>private</dt>
+            <dd>(Optional) Either 'y' for including private followups, or 'n' for returning only public followups. This is optional, and it is assumed that private followups should be returned as well.</dd>
+        </dl>
+
+        <h4>Response</h4>
+
+        <p>This method responds with <strong>json</strong>.</p>
+ 
+        <p>If you receive a 200 OK response, then the content of the response will be a json list of followups, where each item of the list will have the following fields:</p>
+
+        <dl>
+            <dt>date</dt>
+            <dd>Creation date of this ticket as UNIX timestamp.</dd>
+
+            <dt>title</dt>
+            <dd>Title of the followup.</dd>
+
+            <dt>comment</dt>
+            <dd>Comment for the followup.</dd>
+
+            <dt>public</dt>
+            <dd>Boolean flag, will be true if the followup is public, false if it's private.</dd>
+
+            <dt>user</dt>
+            <dd>Username of the user that added the followup. Can be null.</dd>
+
+            <dt>new_status</dt>
+            <dd>New status of the ticket, as changed by this followup. It's null if the status hasn't been changed.</dd>
+        </dl>
+
+
         <h3 id='method_resolve'>resolve</h3>
         
         <p>This method adds a resolution to a ticket and marks it as resolved. The resolution will be e-mailed to everybody involved with the ticket, including the submitter.</p>
@@ -306,8 +350,8 @@ echo $result;
         <h4>Response</h4>
 
         <p>A standard <a href='#response'>200 OK response</a> is given on success, or an error message on failure.</p>
-        
-        
+
+
         <h3 id='method_list_queues'>list_queues</h3>
 
         <p>This method provides a JSON-parsable list of queues, letting you access the individual queue ID in order to create tickets.</p>
