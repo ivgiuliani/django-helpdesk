@@ -31,20 +31,21 @@ class APITest(TestCase):
         response = client.get(reverse("helpdesk_api", args=("list_queues",)))
         self.assertEqual(response.status_code, 405)
 
-        response = client.post(reverse("helpdesk_api", args=("list_queues",)), {
-            "user": "admin",
-            "password": "admin",
-        })
+        response = client.post(
+                        reverse("helpdesk_api", args=("list_queues",)), {
+                            "user": "admin",
+                            "password": "admin",
+                        })
         self.assertEqual(response.status_code, 200)
 
     def testGetTicket(self):
         "Test get_ticket API method"
-        non_existent_ticket = self.api_call("get_ticket", { "ticket": 25 })
+        non_existent_ticket = self.api_call("get_ticket", {"ticket": 25})
         self.assertEqual(non_existent_ticket.status_code,
                          api.STATUS_ERROR_NOT_FOUND,
                          "API call didn't fail on inexisting ticket")
 
-        existing_ticket = self.api_call("get_ticket", { "ticket": 1 })
+        existing_ticket = self.api_call("get_ticket", {"ticket": 1})
         self.assertEqual(existing_ticket.status_code, api.STATUS_OK,
                         "Existing ticket hasn't been returned")
 
@@ -56,11 +57,11 @@ class APITest(TestCase):
         self.assertEquals(ticket["submitter_email"], "customer@customer.com")
 
     def testGetFollowupsForTicket(self):
-        response = self.api_call("get_followups", { "ticket": 25 })
+        response = self.api_call("get_followups", {"ticket": 25})
         self.assertEquals(response.status_code,
                           api.STATUS_ERROR_NOT_FOUND)
 
-        response = self.api_call("get_followups", { "ticket": 1 })
+        response = self.api_call("get_followups", {"ticket": 1})
         self.assertEquals(response.status_code,
                           api.STATUS_OK)
 
@@ -75,7 +76,7 @@ class APITest(TestCase):
                      public=True,
                      title="Comment added")
         f.save()
-        response = self.api_call("get_followups", { "ticket": 1 })
+        response = self.api_call("get_followups", {"ticket": 1})
         followups = simplejson.loads(response.content)
         self.assertEquals(len(followups), 1)
 
