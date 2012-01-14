@@ -55,6 +55,20 @@ class APITest(TestCase):
         self.assertEquals(ticket["description"], "ticket description")
         self.assertEquals(ticket["queue"], 1)
         self.assertEquals(ticket["submitter_email"], "customer@customer.com")
+        self.assertEquals(ticket["assigned_to"], 1)
+
+        ticket_obj = Ticket.objects.get(id=1)
+        ticket_obj.assigned_to = None
+        ticket_obj.save()
+
+        existing_ticket = self.api_call("get_ticket", {"ticket": 1})
+        ticket = simplejson.loads(existing_ticket.content)
+        self.assertIsNotNone(ticket)
+
+        self.assertEquals(ticket["description"], "ticket description")
+        self.assertEquals(ticket["queue"], 1)
+        self.assertEquals(ticket["submitter_email"], "customer@customer.com")
+        self.assertIsNone(ticket["assigned_to"])
 
     def testGetFollowupsForTicket(self):
         response = self.api_call("get_followups", {"ticket": 25})
