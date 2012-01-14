@@ -137,6 +137,50 @@ class API:
         }
         return api_return(STATUS_OK, simplejson.dumps(obj), json=True)
 
+    def api_public_list_tickets(self):
+        queue_id = self.request.POST.get("queue", None)
+        open_tickets = self.request.POST.get("open", 'y')
+        resolved_tickets = self.request.POST.get("resolved", 'n')
+        closed_tickets = self.request.POST.get("closed", 'n')
+        duplicate_tickets = self.request.POST.get("duplicate", 'n')
+
+        if not queue_id:
+            return api_return(STATUS_ERROR, "Queue ID not provided")
+        if open_tickets not in [ 'y', 'n' ]:
+            return api_return(STATUS_ERROR, "Invalid 'open_tickets' flag")
+        if resolved_tickets not in [ 'y', 'n' ]:
+            return api_return(STATUS_ERROR, "Invalid 'resolved_tickets' flag")
+        if closed_tickets not in [ 'y', 'n' ]:
+            return api_return(STATUS_ERROR, "Invalid 'closed_tickets' flag")
+        if duplicate_tickets not in [ 'y', 'n' ]:
+            return api_return(STATUS_ERROR, "Invalid 'duplicate_tickets' flag")
+
+        try:
+            queue = Queue.objects.get(id=queue_id)
+        except Queue.DoesNotExist:
+            return api_return(STATUS_ERROR_NOT_FOUND, "Invalid Queue ID")
+
+        open_tickets = open_tickets == 'y'
+        resolved_tickets = resolved_tickets == 'y'
+        closed_tickets = closed_tickets == 'y'
+        duplicate_tickets = duplicate_tickets == 'y'
+
+        tickets = Ticket.objects.filter(queue=queue)
+
+        if not open_tickets:
+            tickets = tickets.exclude(status=Ticket.OPEN_STATUS)
+            tickets = tickets.exclude(status=Ticket.REOPENED_STATUS)
+        if not resolved_tickets:
+            tickets = tickets.exclude(status=Ticket.RESOLVED_STATUS)
+        if not closed_tickets:
+            tickets = tickets.exclude(status=Ticket.CLOSED_STATUS)
+        if not duplicate_tickets:
+            tickets = tickets.exclude(status=Ticket.DUPLICATE_STATUS)
+
+        obj = tuple([ticket.id for ticket in tickets])
+
+        return api_return(STATUS_OK, simplejson.dumps(obj), json=True)
+
     def api_public_list_queues(self):
         return api_return(STATUS_OK, simplejson.dumps([{"id": "%s" % q.id, "title": "%s" % q.title} for q in Queue.objects.all()]), json=True)
 
