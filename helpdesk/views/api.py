@@ -204,7 +204,16 @@ class API:
         if not include_private:
             followups = followups.filter(public=True)
 
-        followups = tuple([ followup.id for followup in followups ])
+        to_timestamp = lambda d: int(time.mktime(d.timetuple()))
+        followups = tuple([{
+            "date": to_timestamp(followup.date),
+            "title": followup.title,
+            "comment": followup.comment,
+            "public": followup.public,
+            "user": followup.user.username if followup.user else None,
+            "new_status": followup.new_status,
+        } for followup in followups])
+
         return api_return(STATUS_OK, simplejson.dumps(followups), json=True)
 
     def api_public_add_followup(self):
