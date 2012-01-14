@@ -15,6 +15,7 @@
                     <li><a href='#method_create_ticket'>create_ticket</a></li>
                     <li><a href='#method_get_ticket'>get_ticket</a></li>
                     <li><a href='#method_delete_ticket'>delete_ticket</a></li>
+                    <li><a href='#method_list_tickets'>list_tickets</a></li>
                     <li><a href='#method_hold_ticket'>hold_ticket</a></li>
                     <li><a href='#method_unhold_ticket'>unhold_ticket</a></li>
                     <li><a href='#method_add_followup'>add_followup</a></li>
@@ -118,6 +119,7 @@ echo $result;
             <li><a href='#method_create_ticket'>create_ticket</a></li>
             <li><a href='#method_get_ticket'>get_ticket</a></li>
             <li><a href='#method_delete_ticket'>delete_ticket</a></li>
+            <li><a href='#method_list_tickets'>list_tickets</a></li>
             <li><a href='#method_hold_ticket'>hold_ticket</a></li>
             <li><a href='#method_unhold_ticket'>unhold_ticket</a></li>
             <li><a href='#method_add_followup'>add_followup</a></li>
@@ -155,6 +157,7 @@ echo $result;
         <p>This method responds with <strong>plain-text</strong>.</p>
 
         <p>If you receive a 200 OK <a href='#response'>response</a>, then the content of the response will be the ticket ID.</p>
+
 
         <h3 id='method_get_ticket'>get_ticket</h3>
 
@@ -221,7 +224,8 @@ echo $result;
             <dt>resolution</dt>
             <dd>The resolution given to the ticket or an empty string if the ticket is still open.</dd>
         </dl>
-        
+
+
         <h3 id='method_delete_ticket'>delete_ticket</h3>
 
         <p>When given a ticket ID and confirmation, this method will delete a ticket entirely. This also deletes any followups, attachments, and other details.</p>
@@ -254,7 +258,37 @@ echo $result;
         
         <p>A standard <a href='#response'>200 OK response</a> is given on success, or an error message on failure.</p>
 
-        
+
+        <h3 id='method_list_tickets'>list_tickets</h3>
+
+        <p>This method returns a list of ticket IDs for a given queue. It's possible to filter tickets by their status. By default, only open tickets are returned.</p>
+
+        <h4>Parameters</h4>
+
+        <dl>
+            <dt>queue</dt>
+            <dd>The numeric queue ID.</dd>
+
+            <dt>open</dt>
+            <dd>(Optional) Either 'y' for including open tickets or 'n' for excluding them.</dd>
+
+            <dt>resolved</dt>
+            <dd>(Optional) Either 'y' for including resolved tickets or 'n' for excluding them.</dd>
+
+            <dt>closed</dt>
+            <dd>(Optional) Either 'y' for including closed tickets or 'n' for excluding them.</dd>
+
+            <dt>duplicate</dt>
+            <dd>(Optional) Either 'y' for including duplicate tickets or 'n' for excluding them.</dd>
+        </dl>
+
+        <h4>Response</h4>
+
+        <p>This method responds with <strong>json</strong>.</p>
+
+        <p>If you receive a 200 OK <a href='#response'>response</a>, then the content of the response will be a json list of ticket IDs.</p>
+
+
         <h3 id='method_unhold_ticket'>unhold_ticket</h3>
 
         <p>If a ticket is currently on hold and you wish to remove that hold, use this method.</p>
