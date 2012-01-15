@@ -363,7 +363,28 @@ echo $result;
             <dd>Username of the user that added the followup. Can be null.</dd>
 
             <dt>new_status</dt>
-            <dd>New status of the ticket, as changed by this followup. It's null if the status hasn't been changed.</dd>
+            <dd>New status of this ticket as an integer or null if the status hasn't changed. Possible status are:
+            <dl>
+                <dt>1</dt>
+                <dd>Ticket is open</dd>
+
+                <dt>2</dt>
+                <dd>Ticket has been reopened.</dd>
+
+                <dt>3</dt>
+                <dd>Ticket has been resolved.</dd>
+
+                <dt>4</dt>
+                <dd>Ticket has been closed.</dd>
+
+                <dt>5</dt>
+                <dd>The ticket has been closed as a duplicate of some other ticket.</dd>
+
+                <dt>null</dt>
+                <dd>The ticket hasn't  changed.</dd>
+            </dl>
+
+
         </dl>
 
 
