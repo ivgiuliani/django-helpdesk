@@ -16,7 +16,7 @@ from datetime import datetime
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import loader, Context
 from django.utils import simplejson
@@ -345,6 +345,17 @@ class API:
 
         return api_return(STATUS_OK)
 
+    def api_public_get_attachment(self):
+        attachment_id = self.request.POST.get('attachment', None)
+        if not attachment_id:
+            return api_return(STATUS_ERROR, "Invalid attachment ID")
+
+        try:
+            attachment = Attachment.objects.get(id=attachment_id)
+        except Attachment.DoesNotExist:
+            return api_return(STATUS_ERROR_NOT_FOUND, "Attachment not found")
+
+        return HttpResponseRedirect(attachment.file.url)
 
     def api_public_resolve(self):
         try:
