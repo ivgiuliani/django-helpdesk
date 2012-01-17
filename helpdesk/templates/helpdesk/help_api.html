@@ -20,6 +20,7 @@
                     <li><a href='#method_unhold_ticket'>unhold_ticket</a></li>
                     <li><a href='#method_add_followup'>add_followup</a></li>
                     <li><a href='#method_get_followups'>get_followups</a></li>
+                    <li><a href='#method_get_attachment'>get_attachment</a></li>
                     <li><a href='#method_resolve'>resolve</a></li>
                     <li><a href='#method_list_queues'>list_queues</a></li>
                     <li><a href='#method_find_user'>find_user</a></li>
@@ -124,6 +125,7 @@ echo $result;
             <li><a href='#method_unhold_ticket'>unhold_ticket</a></li>
             <li><a href='#method_add_followup'>add_followup</a></li>
             <li><a href='#method_get_followups'>get_followups</a></li>
+            <li><a href='#method_get_attachment'>get_attachment</a></li>
             <li><a href='#method_resolve'>resolve</a></li>
             <li><a href='#method_list_queues'>list_queues</a></li>
             <li><a href='#method_find_user'>find_user</a></li>
@@ -391,6 +393,22 @@ echo $result;
         </dl>
 
 
+        <h3 id='method_get_attachment'>get_attachment</h3>
+
+        <p>This method returns a redirect to a download url for the given attachment.</p>
+
+        <h4>Parameters</h4>
+
+        <dl>
+            <dt>attachment</dt>
+            <dd>The ID of the attachment you want to download.</dd>
+        </dl>
+
+        <h4>Response</h4>
+
+        <p>Returns an HTTP 302 redirect to a proper URL where the attachment can be downloaded.</p>
+
+
         <h3 id='method_resolve'>resolve</h3>
         
         <p>This method adds a resolution to a ticket and marks it as resolved. The resolution will be e-mailed to everybody involved with the ticket, including the submitter.</p>
@@ -420,7 +438,7 @@ echo $result;
         
         <p>It provides a list of queues in JSON format. The fields provided are ID and Title.</p>
 
-        
+
         <h3 id='method_find_user'>find_user</h3>
 
         <p>When given a username, this method provides the related numeric user ID - commonly used when creating or reassigning tickets.</p>
