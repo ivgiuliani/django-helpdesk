@@ -362,6 +362,9 @@ echo $result;
             <dt>user</dt>
             <dd>Username of the user that added the followup. Can be null.</dd>
 
+            <dt>attachments</dt>
+            <dd>A JSON list of attachments for this followup. Each item is a three-items list with the format (attachment id, name, size in bytes).</dd>
+
             <dt>new_status</dt>
             <dd>New status of this ticket as an integer or null if the status hasn't changed. Possible status are:
             <dl>
