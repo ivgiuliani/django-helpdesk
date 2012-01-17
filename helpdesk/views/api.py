@@ -23,7 +23,7 @@ from django.utils import simplejson
 
 from helpdesk.forms import TicketForm
 from helpdesk.lib import send_templated_mail, safe_template_context
-from helpdesk.models import Ticket, Queue, FollowUp
+from helpdesk.models import Ticket, Queue, FollowUp, Attachment
 
 import time
 
@@ -252,16 +252,20 @@ class API:
             followups = followups.filter(public=True)
 
         to_timestamp = lambda d: int(time.mktime(d.timetuple()))
-        followups = tuple([{
-            "date": to_timestamp(followup.date),
-            "title": followup.title,
-            "comment": followup.comment,
-            "public": followup.public,
-            "user": followup.user.username if followup.user else None,
-            "new_status": followup.new_status,
-        } for followup in followups])
+        objdump = []
+        for followup in followups:
+            attachments = [(a.id, a.filename, a.size) for a in Attachment.objects.filter(followup=followup)]
+            objdump.append({
+                "date": to_timestamp(followup.date),
+                "title": followup.title,
+                "comment": followup.comment,
+                "public": followup.public,
+                "attachments": attachments,
+                "user": followup.user.username if followup.user else None,
+                "new_status": followup.new_status,
+            })
 
-        return api_return(STATUS_OK, simplejson.dumps(followups), json=True)
+        return api_return(STATUS_OK, simplejson.dumps(tuple(objdump)), json=True)
 
     def api_public_add_followup(self):
         try:
