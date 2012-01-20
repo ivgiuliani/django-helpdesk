@@ -323,6 +323,9 @@ echo $result;
 
             <dt>public</dt>
             <dd>Either 'y' for public, or 'n' for private. This is optional, and it is assumed that followups are private if it is not provided. Private tickets are <strong>not</strong> e-mailed to the ticket submitter.</dd>
+
+            <dt>attachment</dt>
+            <dd>A single file to be uploaded together with this followup. Requests that contain attachments must be sent as multipart http POST requests. It's possible to include multiple attachments as part of a multipart HTTP request (just stick multiple 'attachment' values in the same request).</dd>
         </dl>
 
         <h4>Response</h4>
