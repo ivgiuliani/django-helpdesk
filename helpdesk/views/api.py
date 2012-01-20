@@ -14,6 +14,7 @@ through templates/helpdesk/help_api.html.
 from datetime import datetime
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
@@ -26,7 +27,9 @@ from helpdesk.forms import TicketForm
 from helpdesk.lib import send_templated_mail, safe_template_context
 from helpdesk.models import Ticket, Queue, FollowUp, Attachment
 
+import mimetypes
 import time
+import os
 
 STATUS_OK = 200
 
@@ -285,13 +288,21 @@ class API:
         return api_return(STATUS_OK, simplejson.dumps(tuple(objdump)), json=True)
 
     def api_public_add_followup(self):
-        try:
-            ticket = Ticket.objects.get(id=self.request.POST.get('ticket', False))
-        except Ticket.DoesNotExist:
-            return api_return(STATUS_ERROR, "Invalid ticket ID")
-
+        ticket_id = self.request.POST.get('ticket', None)
         message = self.request.POST.get('message', None)
         public = self.request.POST.get('public', 'n')
+        if self.request.FILES:
+            attachments = self.request.FILES.getlist('attachment')
+        else:
+            attachments = []
+
+        if not ticket_id:
+            return api_return(STATUS_ERROR, "Ticket ID not provided")
+
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+        except Ticket.DoesNotExist:
+            return api_return(STATUS_ERROR, "Invalid ticket ID")
 
         if public not in ['y', 'n']:
             return api_return(STATUS_ERROR, "Invalid 'public' flag")
@@ -342,6 +353,19 @@ class API:
                         )
                     messages_sent_to.append(cc.email_address)
 
+        files = []
+        for attachment in attachments:
+            filename = attachment.name.replace(' ', '_')
+            a = Attachment(followup=f,
+                           filename=filename,
+                           mime_type=mimetypes.guess_type(filename)[0] or 'application/octet-stream',
+                           size=attachment.size)
+            a.file.save(attachment.name, attachment, save=False)
+            a.save()
+
+            if a.file.size < getattr(settings, 'MAX_EMAIL_ATTACHMENT_SIZE', 512000):
+                files.append(a.file.path)
+
         if ticket.queue.updated_ticket_cc and ticket.queue.updated_ticket_cc not in messages_sent_to:
             send_templated_mail(
                 'updated_cc',
@@ -359,6 +383,7 @@ class API:
                 recipients=ticket.assigned_to.email,
                 sender=ticket.queue.from_address,
                 fail_silently=True,
+                files=files,
                 )
 
         ticket.save()
