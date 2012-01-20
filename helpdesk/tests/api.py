@@ -191,3 +191,15 @@ class APITest(TestCase):
             "duplicate": 'y',
         })
         self.assertEquals(len(simplejson.loads(response.content)), 5)
+
+    def testUserFromId(self):
+        response = self.api_call("find_user_from_id", {
+            "user_id": 1,
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.content, "admin")
+
+        response = self.api_call("find_user_from_id", {
+            "user_id": 200,
+        })
+        self.assertEquals(response.status_code, 404)
