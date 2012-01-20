@@ -8,6 +8,7 @@ from helpdesk.views import api
 from helpdesk.models import Ticket, Queue, FollowUp
 
 import datetime
+import tempfile
 
 
 class APITest(TestCase):
@@ -233,3 +234,51 @@ class APITest(TestCase):
         self.assertEqual(len(followups), 1)
         self.assertEqual(followups[0]["comment"], "private followup")
         self.assertEqual(followups[0]["public"], False)
+
+    def testAddFollowupWithSingleAttachment(self):
+        "Test a file upload together with an attachment"
+        with tempfile.TemporaryFile() as f:
+            f.write("content")
+            f.seek(0)
+            self.api_call("add_followup", {
+                "user": "admin",
+                "password": "admin",
+                "ticket": 1,
+                "message": "this followup has an attachment",
+                "public": 'y',
+                "attachment": [ f ],
+            })
+
+        response = self.api_call("get_followups", {
+            "ticket": 1,
+        })
+        followups = simplejson.loads(response.content)
+        self.assertEqual(len(followups), 1)
+        attachments = followups[0]["attachments"]
+        self.assertEqual(len(attachments), 1)
+
+    def testAddFollowupWithMultipleAttachments(self):
+        with tempfile.TemporaryFile() as f1:
+            with tempfile.TemporaryFile() as f2:
+                f1.write("content1")
+                f2.write("content2")
+
+                f1.seek(0)
+                f2.seek(0)
+
+                self.api_call("add_followup", {
+                    "user": "admin",
+                    "password": "admin",
+                    "ticket": 1,
+                    "message": "this followup has two attachments",
+                    "public": 'y',
+                    "attachment": [ f1, f2 ],
+                })
+
+        response = self.api_call("get_followups", {
+            "ticket": 1,
+        })
+        followups = simplejson.loads(response.content)
+        self.assertEqual(len(followups), 1)
+        attachments = followups[0]["attachments"]
+        self.assertEqual(len(attachments), 2)
