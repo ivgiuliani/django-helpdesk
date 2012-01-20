@@ -24,6 +24,7 @@
                     <li><a href='#method_resolve'>resolve</a></li>
                     <li><a href='#method_list_queues'>list_queues</a></li>
                     <li><a href='#method_find_user'>find_user</a></li>
+                    <li><a href='#method_find_user_from_id'>find_user_from_id</a></li>
                 </ul>
             </li>
         </ul>
@@ -129,6 +130,7 @@ echo $result;
             <li><a href='#method_resolve'>resolve</a></li>
             <li><a href='#method_list_queues'>list_queues</a></li>
             <li><a href='#method_find_user'>find_user</a></li>
+            <li><a href='#method_find_user_from_id'>find_user_from_id</a></li>
         </ul>
 
         <h3 id='method_create_ticket'>create_ticket</h3>
@@ -455,4 +457,23 @@ echo $result;
         <p>This method responds with <strong>plain-text</strong>.</p>
 
         <p>If you receive a 200 OK <a href='#response'>response</a>, then the content of the response will be the users ID.</p>
+
+
+        <h3 id='method_find_user_from_id'>find_user_from_id</h3>
+
+        <p>When given a user ID, this method provides the related username.</p>
+        
+        <h4>Parameters</h4>
+
+        <dl>
+            <dt>user_id</dt>
+            <dd>The numeric User ID of the user for which you require the username</dd>
+        </dl>
+        
+        <h4>Response</h4>
+
+        <p>This method responds with <strong>plain-text</strong>.</p>
+
+        <p>If you receive a 200 OK <a href='#response'>response</a>, then the content of the response will be the username.</p>
+
 {% endblock %}
