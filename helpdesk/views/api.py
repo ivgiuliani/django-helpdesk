@@ -295,6 +295,7 @@ class API:
 
         if public not in ['y', 'n']:
             return api_return(STATUS_ERROR, "Invalid 'public' flag")
+        public = public == 'y'
 
         if not message:
             return api_return(STATUS_ERROR, "Blank message")
@@ -309,6 +310,8 @@ class API:
 
         if public:
             f.public = True
+        else:
+            f.public = False
 
         f.save()
 
