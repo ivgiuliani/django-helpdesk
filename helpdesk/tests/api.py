@@ -203,3 +203,33 @@ class APITest(TestCase):
             "user_id": 200,
         })
         self.assertEquals(response.status_code, 404)
+
+    def testAddFollowup(self):
+        response = self.api_call("add_followup", {
+            "ticket": 1,
+            "message": "simple followup",
+            "public": 'y',
+        })
+        self.assertEquals(response.status_code, 200)
+        response = self.api_call("get_followups", {
+            "ticket": 1,
+        })
+        followups = simplejson.loads(response.content)
+        self.assertEqual(len(followups), 1)
+        self.assertEqual(followups[0]["comment"], "simple followup")
+        self.assertEqual(followups[0]["public"], True)
+
+    def testAddPrivateFollowup(self):
+        response = self.api_call("add_followup", {
+            "ticket": 1,
+            "message": "private followup",
+            "public": 'n',
+        })
+        self.assertEquals(response.status_code, 200)
+        response = self.api_call("get_followups", {
+            "ticket": 1,
+        })
+        followups = simplejson.loads(response.content)
+        self.assertEqual(len(followups), 1)
+        self.assertEqual(followups[0]["comment"], "private followup")
+        self.assertEqual(followups[0]["public"], False)
