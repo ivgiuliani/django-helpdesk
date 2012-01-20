@@ -189,7 +189,6 @@ class API:
     def api_public_list_queues(self):
         return api_return(STATUS_OK, simplejson.dumps([{"id": "%s" % q.id, "title": "%s" % q.title} for q in Queue.objects.all()]), json=True)
 
-
     def api_public_find_user(self):
         username = self.request.POST.get('username', False)
 
@@ -200,6 +199,22 @@ class API:
         except User.DoesNotExist:
             return api_return(STATUS_ERROR, "Invalid username provided")
 
+    def api_public_find_user_from_id(self):
+        user_id = self.request.POST.get('user_id', None)
+        if not user_id:
+            return api_return(STATUS_ERROR, "User ID not provided")
+
+        try:
+            user_id = int(user_id)
+        except ValueError:
+            return api_return(STATUS_ERROR, "Invalid user ID provided")
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return api_return(STATUS_ERROR_NOT_FOUND, "Invalid user ID provided")
+
+        return api_return(STATUS_OK, user.username)
 
     def api_public_delete_ticket(self):
         if not self.request.POST.get('confirm', False):
