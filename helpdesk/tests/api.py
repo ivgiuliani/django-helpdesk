@@ -246,7 +246,7 @@ class APITest(TestCase):
                 "ticket": 1,
                 "message": "this followup has an attachment",
                 "public": 'y',
-                "attachment": [ f ],
+                "attachment": [f],
             })
 
         response = self.api_call("get_followups", {
@@ -272,7 +272,7 @@ class APITest(TestCase):
                     "ticket": 1,
                     "message": "this followup has two attachments",
                     "public": 'y',
-                    "attachment": [ f1, f2 ],
+                    "attachment": [f1, f2],
                 })
 
         response = self.api_call("get_followups", {
