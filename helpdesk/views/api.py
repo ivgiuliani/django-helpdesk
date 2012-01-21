@@ -398,7 +398,7 @@ class API:
         except Attachment.DoesNotExist:
             return api_return(STATUS_ERROR_NOT_FOUND, "Attachment not found")
 
-        return HttpResponseRedirect(attachment.file.url)
+        return api_return(STATUS_OK, attachment.file.url)
 
     def api_public_resolve(self):
         try:
