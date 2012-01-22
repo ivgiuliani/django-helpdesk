@@ -237,17 +237,17 @@ class APITest(TestCase):
 
     def testAddFollowupWithSingleAttachment(self):
         "Test a file upload together with an attachment"
-        with tempfile.TemporaryFile() as f:
-            f.write("content")
-            f.seek(0)
-            self.api_call("add_followup", {
-                "user": "admin",
-                "password": "admin",
-                "ticket": 1,
-                "message": "this followup has an attachment",
-                "public": 'y',
-                "attachment": [f],
-            })
+        f = tempfile.TemporaryFile()
+        f.write("content")
+        f.seek(0)
+        self.api_call("add_followup", {
+            "user": "admin",
+            "password": "admin",
+            "ticket": 1,
+            "message": "this followup has an attachment",
+            "public": 'y',
+            "attachment": [f],
+        })
 
         response = self.api_call("get_followups", {
             "ticket": 1,
@@ -258,22 +258,22 @@ class APITest(TestCase):
         self.assertEqual(len(attachments), 1)
 
     def testAddFollowupWithMultipleAttachments(self):
-        with tempfile.TemporaryFile() as f1:
-            with tempfile.TemporaryFile() as f2:
-                f1.write("content1")
-                f2.write("content2")
+        f1 = tempfile.TemporaryFile()
+        f2 = tempfile.TemporaryFile()
+        f1.write("content1")
+        f2.write("content2")
 
-                f1.seek(0)
-                f2.seek(0)
+        f1.seek(0)
+        f2.seek(0)
 
-                self.api_call("add_followup", {
-                    "user": "admin",
-                    "password": "admin",
-                    "ticket": 1,
-                    "message": "this followup has two attachments",
-                    "public": 'y',
-                    "attachment": [f1, f2],
-                })
+        self.api_call("add_followup", {
+            "user": "admin",
+            "password": "admin",
+            "ticket": 1,
+            "message": "this followup has two attachments",
+            "public": 'y',
+            "attachment": [f1, f2],
+        })
 
         response = self.api_call("get_followups", {
             "ticket": 1,
